@@ -338,7 +338,10 @@ local on_attach = function(_, bufnr)
 end
 
 -- Setup mason so it can manage external tooling
-require("mason").setup()
+require("mason").setup({
+  -- https://github.com/williamboman/nvim-lsp-installer/discussions/509
+  PATH = "prepend", -- "skip" seems to cause the spawning error
+})
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
