@@ -2,8 +2,29 @@ return {
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.5",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+			"nvim-tree/nvim-web-devicons",
+		},
 		config = function()
+			local telescope = require("telescope")
+			local actions = require("telescope.actions")
+
+			telescope.setup({
+				defaults = {
+					path_display = { "truncate " },
+					mappings = {
+						i = {
+							["<C-k>"] = actions.move_selection_previous,
+							["<C-j>"] = actions.move_selection_next,
+						},
+					},
+				},
+			})
+
+			telescope.load_extension("fzf")
+
 			local builtin = require("telescope.builtin")
 			vim.keymap.set("n", "<leader>ft", function()
 				builtin.colorscheme({ enable_preview = true })
