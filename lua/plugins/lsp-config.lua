@@ -26,10 +26,14 @@ return {
 				capabilities = capabilities,
 				filetypes = { "typescript", "vue" },
 			})
-			lspconfig.volar.setup({
+			lspconfig.tsserver.setup({
 				capabilities = capabilities,
-				filetypes = { "typescript", "vue" },
+				filetypes = { "typescript" },
 			})
+			-- lspconfig.volar.setup({
+			--   capabilities = capabilities,
+			--   filetypes = { "vue" },
+			-- })
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),

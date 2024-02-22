@@ -15,10 +15,14 @@ vim.keymap.set("n", "VV", "V$%", { noremap = true })
 -- paste and replace without losing yanked text
 vim.keymap.set("v", "p", '"_dP', { noremap = true })
 
-vim.keymap.set("n", "<C-q>", ":wqa<CR>", { noremap = true })
+vim.keymap.set("n", "<C-q>", ":qa<CR>", { noremap = true })
 
 vim.keymap.set("n", "<S-l>", ":bnext<CR>", { noremap = true })
 vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { noremap = true })
 
 vim.keymap.set("n", "n", "nzz", { noremap = true })
 vim.keymap.set("n", "N", "Nzz", { noremap = true })
+
+vim.keymap.set("n", "|", "<cmd>vsplit<cr>", { noremap = true })
+
+vim.keymap.set("n", "<leader>pp", '<cmd>TermExec direction=vertical go_back=0 size=80 cmd=""<cr>', { noremap = true })
