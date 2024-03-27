@@ -22,6 +22,8 @@ vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { noremap = true })
 
 vim.keymap.set("n", "n", "nzz", { noremap = true })
 vim.keymap.set("n", "N", "Nzz", { noremap = true })
+vim.keymap.set("n", "{", "{zz", { noremap = true })
+vim.keymap.set("n", "}", "}zz", { noremap = true })
 
 vim.keymap.set("n", "|", "<cmd>vsplit<cr>", { noremap = true })
 
