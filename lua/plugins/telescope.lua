@@ -13,7 +13,7 @@ return {
 
 			telescope.setup({
 				defaults = {
-					path_display = { "truncate" },
+					path_display = { len = 2 },
 					mappings = {
 						i = {
 							["<C-k>"] = actions.move_selection_previous,
@@ -35,7 +35,6 @@ return {
 			vim.keymap.set("n", "<leader>gs", builtin.git_status, {})
 			vim.keymap.set("n", "<leader>f<CR>", builtin.resume, {})
 			vim.keymap.set("n", "<leader>fo", builtin.oldfiles, {})
-			vim.keymap.set("n", "gr", builtin.lsp_references, {})
 
 			vim.keymap.set("n", "<leader>fk", function()
 				require("telescope.builtin").keymaps()
@@ -44,6 +43,28 @@ return {
 			vim.keymap.set("n", "<leader>gt", function()
 				builtin.diagnostics({ bufnr = 0 })
 			end, {})
+
+			vim.keymap.set("n", "gr", builtin.lsp_references, {})
+			-- -- exclude references starting with `import`
+			-- local function custom_lsp_references()
+			--   vim.lsp.buf.references({}, function(result)
+			--     local filtered_result = {}
+			--     for _, item in ipairs(result) do
+			--       local line = vim.api.nvim_buf_get_lines(
+			--         item.uri,
+			--         item.range.start.line,
+			--         item.range.start.line + 1,
+			--         false
+			--       )[1]
+			--       if not line:match("^import") then
+			--         table.insert(filtered_result, item)
+			--       end
+			--     end
+			--     vim.lsp.util.set_qflist(filtered_result, " ", { title = "LSP References" })
+			--     vim.cmd("copen")
+			--   end)
+			-- end
+			-- vim.keymap.set("n", "gr", custom_lsp_references, {})
 		end,
 	},
 }

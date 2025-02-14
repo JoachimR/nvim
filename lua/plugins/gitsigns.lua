@@ -3,6 +3,7 @@ return {
 	config = function()
 		require("gitsigns").setup()
 		vim.keymap.set("n", "<C-n>", ":Gitsigns next_hunk<CR>zz", { noremap = true })
-		vim.keymap.set("n", "<C-j>", ":Gitsigns prev_hunk<CR>zz", { noremap = true })
+		-- vim.keymap.set("n", "<C-j>", ":Gitsigns prev_hunk<CR>zz", { noremap = true })
+		vim.keymap.set("n", "<leader>hh", ":Gitsigns preview_hunk<CR>", { noremap = true })
 	end,
 }

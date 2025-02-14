@@ -15,38 +15,40 @@ return {
 	},
 	{
 		"neovim/nvim-lspconfig",
-		config = function()
+		config = function(on_attach)
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
 
+			lspconfig.kotlin_language_server.setup({})
+
+			lspconfig.bashls.setup({
+				capabilities = capabilities,
+			})
 			lspconfig.lua_ls.setup({
 				capabilities = capabilities,
 			})
+
 			lspconfig.eslint.setup({
 				capabilities = capabilities,
-				filetypes = { "typescript", "vue", "javascript" },
-				on_attach = function(client, bufnr)
+				filetypes = { "vue", "typescript", "javascript" },
+				on_attach = function(_, bufnr)
 					vim.api.nvim_create_autocmd("BufWritePre", {
 						buffer = bufnr,
-						callback = function()
-							vim.cmd("EslintFixAll")
-						end,
+						command = "EslintFixAll",
 					})
-					-- local filename = vim.fn.expand("%:t")
-					-- local file_extension = vim.fn.fnamemodify(filename, ":e")
-					-- if file_extension == "vue" or file_extension == "ts" then
-					--   vim.api.nvim_create_autocmd("BufWritePre", {
-					--     buffer = bufnr,
-					--     callback = function()
-					--       vim.cmd("EslintFixAll")
-					--     end,
-					--   })
-					-- end
 				end,
 			})
+
 			lspconfig.volar.setup({
-				capabilities = capabilities,
-				filetypes = { "vue" },
+				filetypes = { "vue", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+				init_options = {
+					vue = {
+						hybridMode = false,
+					},
+					-- typescript = {
+					--   tsdk = vim.fn.getcwd() .. "/node_modules/typescript/lib",
+					-- },
+				},
 			})
 
 			vim.api.nvim_create_autocmd("LspAttach", {
@@ -66,6 +68,26 @@ return {
 					vim.keymap.set("n", "<space>la", vim.lsp.buf.code_action, opts)
 				end,
 			})
+
+			vim.g.diagnostics_active = false
+			local function toggle_diagnostics()
+				if vim.g.diagnostics_active then
+					vim.g.diagnostics_active = false
+					vim.lsp.diagnostic.clear(0)
+					vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
+				else
+					vim.g.diagnostics_active = true
+					vim.lsp.handlers["textDocument/publishDiagnostics"] =
+						vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+							virtual_text = true,
+							signs = true,
+							underline = true,
+							update_in_insert = false,
+						})
+				end
+			end
+
+			vim.keymap.set("n", "<leader>dia", toggle_diagnostics, { noremap = true, silent = true })
 		end,
 	},
 }

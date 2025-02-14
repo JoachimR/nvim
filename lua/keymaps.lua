@@ -25,6 +25,14 @@ vim.keymap.set("n", "N", "Nzz", { noremap = true })
 vim.keymap.set("n", "{", "{zz", { noremap = true })
 vim.keymap.set("n", "}", "}zz", { noremap = true })
 
+vim.keymap.set("n", "<C-d>", "8jzz", { noremap = true })
+vim.keymap.set("n", "<C-u>", "8kzz", { noremap = true })
+
 vim.keymap.set("n", "|", "<cmd>vsplit<cr>", { noremap = true })
 
 vim.keymap.set("n", "<leader>pp", '<cmd>TermExec direction=vertical go_back=0 size=80 cmd=""<cr>', { noremap = true })
+vim.keymap.set("n", "<leader>rr", ':e!<CR>', { noremap = true })
+
+vim.keymap.set("n", "<leader>dd", ':bd<CR>', { noremap = true })
+
+vim.keymap.set("n", "<leader>cc", ':w<CR>:bd<CR>', { noremap = true })
