@@ -6,50 +6,28 @@ return {
 		end,
 	},
 	{
-		"williamboman/mason-lspconfig.nvim",
-		config = function()
-			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls" },
-			})
-		end,
-	},
-	{
 		"neovim/nvim-lspconfig",
 		config = function(on_attach)
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			local lspconfig = require("lspconfig")
 
-			lspconfig.kotlin_language_server.setup({})
-
-			lspconfig.bashls.setup({
+			vim.lsp.config("lua_ls", {
 				capabilities = capabilities,
 			})
-			lspconfig.lua_ls.setup({
+			vim.lsp.config("kotlin_language_server", {})
+			vim.lsp.config("bashls", {
 				capabilities = capabilities,
 			})
 
-			lspconfig.eslint.setup({
-				capabilities = capabilities,
-				filetypes = { "vue", "typescript", "javascript" },
-				on_attach = function(_, bufnr)
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						buffer = bufnr,
-						command = "EslintFixAll",
-					})
-				end,
-			})
-
-			lspconfig.volar.setup({
-				filetypes = { "vue", "javascript", "typescript", "javascriptreact", "typescriptreact" },
-				init_options = {
-					vue = {
-						hybridMode = false,
-					},
-					-- typescript = {
-					--   tsdk = vim.fn.getcwd() .. "/node_modules/typescript/lib",
-					-- },
-				},
-			})
+      vim.lsp.config('eslint', {
+        capabilities = capabilities,
+        filetypes = { "vue", "typescript", "javascript" },
+        on_attach = function(_, bufnr)
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "EslintFixAll",
+          })
+        end,
+      })
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -89,5 +67,13 @@ return {
 
 			vim.keymap.set("n", "<leader>dia", toggle_diagnostics, { noremap = true, silent = true })
 		end,
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
+		-- config = function()
+		-- 	require("mason-lspconfig").setup({
+		-- 		ensure_installed = { "lua_ls" },
+		-- 	})
+		-- end,
 	},
 }

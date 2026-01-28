@@ -36,3 +36,7 @@ vim.keymap.set("n", "<leader>rr", ':e!<CR>', { noremap = true })
 vim.keymap.set("n", "<leader>dd", ':bd<CR>', { noremap = true })
 
 vim.keymap.set("n", "<leader>cc", ':w<CR>:bd<CR>', { noremap = true })
+
+-- go to after the selection after yanking selection
+vim.keymap.set("v", "y", "ygv<Esc>", { noremap = true })
+
