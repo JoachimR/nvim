@@ -13,7 +13,6 @@ return {
 				ensure_installed = {
 					"lua_ls",
 					"vue_ls",
-					"eslint",
 				},
 			})
 		end,
@@ -71,14 +70,8 @@ return {
 				},
 			})
 
-			-- ESLint with autofix on save
-			vim.lsp.config("eslint", {
-				capabilities = capabilities,
-				filetypes = { "vue", "typescript", "javascript", "typescriptreact", "javascriptreact" },
-			})
-
 			-- Enable all configured servers
-			vim.lsp.enable({ "lua_ls", "kotlin_language_server", "bashls", "vue_ls", "eslint" })
+			vim.lsp.enable({ "lua_ls", "kotlin_language_server", "bashls", "vue_ls" })
 
 			-- LSP Keymaps on attach
 			vim.api.nvim_create_autocmd("LspAttach", {
@@ -87,7 +80,6 @@ return {
 					vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
 					local opts = { buffer = ev.buf }
-					local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
 					vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
@@ -97,14 +89,6 @@ return {
 					vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
 					vim.keymap.set("n", "<space>lr", vim.lsp.buf.rename, opts)
 					vim.keymap.set("n", "<space>la", vim.lsp.buf.code_action, opts)
-
-					-- ESLint autofix on save
-					if client and client.name == "eslint" then
-						vim.api.nvim_create_autocmd("BufWritePre", {
-							buffer = ev.buf,
-							command = "EslintFixAll",
-						})
-					end
 				end,
 			})
 		end,
