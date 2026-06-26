@@ -13,6 +13,14 @@ return {
 				ensure_installed = {
 					"lua_ls",
 					"vue_ls",
+					"vtsls",
+				},
+				-- mason-lspconfig auto-enables every installed server. ts_ls is
+				-- still installed from before, but it has no Vue plugin and would
+				-- attach alongside vtsls, fighting over TypeScript and breaking
+				-- .vue references. Exclude it so only vtsls serves TS.
+				automatic_enable = {
+					exclude = { "ts_ls" },
 				},
 			})
 		end,
@@ -56,22 +64,51 @@ return {
 				capabilities = capabilities,
 			})
 
-			-- Volar for Vue (also handles TypeScript in Vue projects)
+			-- Vue 3 / Volar v2 hybrid mode: vue_ls handles .vue templates, and
+			-- delegates all TypeScript (in .ts AND .vue <script> blocks) to vtsls,
+			-- which loads @vue/typescript-plugin. This is what makes references
+			-- cross .ts <-> .vue boundaries (e.g. gr on an exported symbol finds
+			-- its usages inside .vue files).
+			local vue_plugin_path = vim.fn.stdpath("data")
+				.. "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin"
+
 			vim.lsp.config("vue_ls", {
 				capabilities = capabilities,
-				filetypes = { "vue", "typescript", "javascript", "typescriptreact", "javascriptreact" },
 				init_options = {
-					vue = {
-						hybridMode = false,
-					},
 					typescript = {
 						tsdk = get_typescript_lib_path(),
 					},
 				},
 			})
 
+			vim.lsp.config("vtsls", {
+				capabilities = capabilities,
+				filetypes = {
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact",
+					"vue",
+				},
+				settings = {
+					vtsls = {
+						tsserver = {
+							globalPlugins = {
+								{
+									name = "@vue/typescript-plugin",
+									location = vue_plugin_path,
+									languages = { "vue" },
+									configNamespace = "typescript",
+									enableForWorkspaceTypeScriptVersions = true,
+								},
+							},
+						},
+					},
+				},
+			})
+
 			-- Enable all configured servers
-			vim.lsp.enable({ "lua_ls", "kotlin_language_server", "bashls", "vue_ls" })
+			vim.lsp.enable({ "lua_ls", "kotlin_language_server", "bashls", "vue_ls", "vtsls" })
 
 			-- LSP Keymaps on attach
 			vim.api.nvim_create_autocmd("LspAttach", {
@@ -83,7 +120,7 @@ return {
 
 					vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+					-- gd: see telescope.lua (uses lsp_definitions picker)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
 					vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
